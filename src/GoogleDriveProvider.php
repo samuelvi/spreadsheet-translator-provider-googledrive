@@ -11,28 +11,27 @@
 
 namespace Atico\SpreadsheetTranslator\Provider\GoogleDrive;
 
+use Exception;
+use GuzzleHttp\Client;
 use Atico\SpreadsheetTranslator\Core\Configuration\Configuration;
 use Atico\SpreadsheetTranslator\Core\Provider\ProviderInterface;
 use Atico\SpreadsheetTranslator\Core\Resource\Resource;
-use Atico\SpreadsheetTranslator\Core\Util\Curl;
-use GuzzleHttp;
 
 class GoogleDriveProvider implements ProviderInterface
 {
-    /** @var GoogleDriveConfigurationManager $configuration */
-    protected $configuration;
+    protected GoogleDriveConfigurationManager $configuration;
 
     public function __construct(Configuration $configuration)
     {
         $this->configuration = new GoogleDriveConfigurationManager($configuration);
     }
 
-    public function getProvider()
+    public function getProvider(): string
     {
         return 'google_drive';
     }
 
-    public function handleSourceResource()
+    public function handleSourceResource(): Resource
     {
         $format = $this->configuration->getFormat();
         $sourceResource = $this->configuration->getSourceResource();
@@ -42,42 +41,24 @@ class GoogleDriveProvider implements ProviderInterface
 
         $url = sprintf('https://docs.google.com/spreadsheets/d/%s/export?format=%s&id=%s', $documentId, $format, $documentId);
 
-        self::downloadFileFromUrlByGuzzleHttp($url, $tempLocalResource);
+        $this->downloadFileFromUrlByGuzzleHttp($url, $tempLocalResource);
         return new Resource($tempLocalResource, $format);
     }
 
-    protected function getDocumentIdFromUrl($url)
+    protected function getDocumentIdFromUrl($url): string
     {
-        $portions = explode('/', $url);
+        $portions = explode('/', (string) $url);
         foreach ($portions as $index => $portion) {
-            if ($portion == 'd') return $portions[$index + 1];
+            if ($portion === 'd') {
+                return $portions[$index + 1];
+            }
         }
-        throw new \Exception(sprintf('Document Id not found in the url: "$url"', $url));
+        throw new Exception(sprintf('Document Id not found in the url: "$url"', $url));
     }
 
-    private static function downloadFileFromUrlByGuzzleHttp($url, $tempLocalResource)
+    private function downloadFileFromUrlByGuzzleHttp(string $url, $tempLocalResource): void
     {
-        $guzzleHttpClient = new GuzzleHttp\Client();
+        $guzzleHttpClient = new Client();
         $guzzleHttpClient->get($url, ['save_to' => $tempLocalResource]);
-    }
-
-    private static function downloadFileFromUrlByCurl($url, $tempLocalResource)
-    {
-        $content = Curl::get($url);
-        file_put_contents($tempLocalResource, $content);
-    }
-
-    private static function downloadFileFromUrlByGuzzleHttpLongWay($url, $tempLocalResource)
-    {
-        $params = array('timeout' => 10, 'connect_timeout' => 10);
-        $client = new GuzzleHttp\Client();
-
-        // send request / get response
-        $response = $client->get($url, $params);
-
-        // this is the response body from the requested page (usually html)
-        $result = $response->getBody();
-        file_put_contents($tempLocalResource, $result, FILE_BINARY);
-
     }
 }
