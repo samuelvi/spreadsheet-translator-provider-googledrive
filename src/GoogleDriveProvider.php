@@ -60,7 +60,7 @@ class GoogleDriveProvider implements ProviderInterface
     {
         $guzzleHttpClient = new Client();
         $guzzleHttpClient->get($url, [
-            'save_to' => $tempLocalResource,
+            'sink' => $tempLocalResource,
             'allow_redirects' => true
         ]);
     }
