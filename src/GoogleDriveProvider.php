@@ -47,7 +47,7 @@ class GoogleDriveProvider implements ProviderInterface
 
     protected function getDocumentIdFromUrl($url): string
     {
-        $portions = explode('/', (string) $url);
+        $portions = explode('/', (string)$url);
         foreach ($portions as $index => $portion) {
             if ($portion === 'd') {
                 return $portions[$index + 1];
@@ -59,6 +59,9 @@ class GoogleDriveProvider implements ProviderInterface
     private function downloadFileFromUrlByGuzzleHttp(string $url, $tempLocalResource): void
     {
         $guzzleHttpClient = new Client();
-        $guzzleHttpClient->get($url, ['save_to' => $tempLocalResource]);
+        $guzzleHttpClient->get($url, [
+            'save_to' => $tempLocalResource,
+            'allow_redirects' => true
+        ]);
     }
 }
