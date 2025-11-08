@@ -1,31 +1,47 @@
-Spreadsheet Translator Google Drive Provider
-========================
+# Spreadsheet Translator - Google Drive Provider
 
-This package grasps a shared spreadsheet document from google drive.
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/samuelvi/spreadsheet-translator-provider-googledrive.svg?style=flat-square)](https://packagist.org/packages/samuelvi/spreadsheet-translator-provider-googledrive)
+[![Total Downloads](https://img.shields.io/packagist/dt/samuelvi/spreadsheet-translator-provider-googledrive.svg?style=flat-square)](https://packagist.org/packages/samuelvi/spreadsheet-translator-provider-googledrive)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![Build Status](https://img.shields.io/travis/samuelvicent/spreadsheet-translator-provider-googledrive/master.svg?style=flat-square)](https://travis-ci.org/samuelvicent/spreadsheet-translator-provider-googledrive)
 
-Related
-------------
+Spreadsheet Translator - Google Drive Provider with no authentication.
 
-  - <a href="https://github.com/samuelvi/spreadsheet-translator-core">Core Bundle</a>
-  - <a href="https://github.com/samuelvi/spreadsheet-translator-symfony-bundle">Symfony Bundle</a>
+## Installation
 
+You can install the package via composer:
 
-Requirements
-------------
+```bash
+composer require samuelvi/spreadsheet-translator-provider-googledrive
+```
 
-  * PHP >=8.1
+## Usage
 
+```php
+<?php
 
-Contributing
-------------
+require_once __DIR__ . '/vendor/autoload.php';
 
-We welcome contributions to this project, including pull requests and issues (and discussions on existing issues).
+use Atico\SpreadsheetTranslator\SpreadsheetTranslator;
 
-If you'd like to contribute code but aren't sure what, the issues list is a good place to start. If you're a first-time code contributor, you may find Github's guide to <a href="https://guides.github.com/activities/forking/">forking projects</a> helpful.
+$spreadsheetTranslator = new SpreadsheetTranslator([
+    'provider' => 'google_drive',
+    'source_resource' => 'https://docs.google.com/spreadsheets/d/1q7-h_uE-Ay-iQVR2n2_d_2G_2G_2G_2G_2G_2G_2G_2G_2G/edit#gid=0',
+]);
 
-All contributors (whether contributing code, involved in issue discussions, or involved in any other way) must abide by our code of conduct.
+$translations = $spreadsheetTranslator->getTranslations('en');
+```
 
-License
--------
+## Development
 
-Spreadsheet Translator Symfony Bundle is licensed under the MIT License. See the LICENSE file for full details.
+### Running tests
+
+```bash
+make test
+```
+
+### Running Rector
+
+```bash
+make rector
+```
